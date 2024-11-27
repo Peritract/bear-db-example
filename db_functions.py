@@ -4,6 +4,7 @@ from psycopg2 import connect
 from psycopg2.extensions import connection
 from psycopg2.extras import RealDictCursor, execute_values
 
+
 def get_db_connection(config) -> connection:
     """Returns a live connection to the database."""
     return connect(
@@ -31,6 +32,7 @@ def get_location_mapping_dict(conn: connection) -> dict:
         rows = cur.fetchall()
     return {row["location_name"]: row["location_id"] for row in rows}
 
+
 def get_bear_type_mapping_dict(conn: connection) -> dict:
     """Returns a dict mapping bear type names to in-database IDs."""
 
@@ -39,9 +41,12 @@ def get_bear_type_mapping_dict(conn: connection) -> dict:
         rows = cur.fetchall()
     return {row["bear_type"]: row["bear_type_id"] for row in rows} # Dictionary comprehension
 
-    mapping = {}
-    for row in rows:
-        mapping[row["bear_type"]] = row["bear_type_id"]
+    # Identical effect:
+    # mapping = {}
+    # for row in rows:
+    #     mapping[row["bear_type"]] = row["bear_type_id"]
+    # Return mapping
+
 
 def format_attacks_for_insertion(attack_data: list[dict],
                                  loc_map: dict, bear_map: dict) -> list[tuple]:
@@ -74,6 +79,7 @@ def upload_attacks(attack_data: list[dict], conn: connection) -> None:
         execute_values(cur, query, attack_data)
         
     conn.commit()
+
 
 if __name__ == "__main__":
 
